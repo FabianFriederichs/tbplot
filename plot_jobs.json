@@ -23,7 +23,7 @@
                 "alpha" : 0.5
             }
         },
-        "tick_style_x" : "plain",
+        "tick_style_x" : "scientific",
         "tick_style_y" : "plain",
         "tick_sci_limits" : {
             "x" : [-2.0, 2.0],

@@ -196,7 +196,7 @@ def plot_tensorboard(plot_data):
         axes[tag].tick_params(axis='both', which='minor', labelsize=settings['fontsize']['axis_tick_minor'])
         # tick label format
         axes[tag].ticklabel_format(axis='x', style=settings['tick_style_x'], scilimits=settings['tick_sci_limits']['x'])
-        axes[tag].ticklabel_format(axis='x', style=settings['tick_style_y'], scilimits=settings['tick_sci_limits']['y'])
+        axes[tag].ticklabel_format(axis='y', style=settings['tick_style_y'], scilimits=settings['tick_sci_limits']['y'])
 
     # plot data
     for i, tag in enumerate(plot_data['tags']):
