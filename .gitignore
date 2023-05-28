@@ -1,3 +1,8 @@
+# custom stuff
+raw_data/
+data/
+*.pdf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -117,13 +117,8 @@ def plot_average_only(tag_index, fig, axes, steps, values, plot_data, settings):
 
 # main plot function
 def plot_tensorboard(plot_data):
-    # check if plot settings exist
-    if plot_data['plot_settings'] is not None:
-        if not os.path.exists(plot_data['plot_settings']):
-            raise ValueError(f"Settings file not found: {plot_data['plot_settings']}")
-        with open(plot_data['plot_settings']) as settings_file:
-            settings = json.load(settings_file)
-
+    # get plot settings
+    settings = plot_data['plot_settings']
     # load event data using tensorboard API
     accumulators = {}
     for f in plot_data['event_files']:
@@ -247,6 +242,13 @@ def main():
     # parse arguments
     args = parser.parse_args()
 
+    # load plot settings
+    if args.settings is not None:
+        if not os.path.exists(args.settings):
+            raise ValueError(f"Settings file not found: {args.settings}")
+        with open(args.settings) as settings_file:
+            settings = json.load(settings_file)
+
     # check if event file exists and throw error if not found
     for f in args.event_files:
         if not os.path.exists(f):
@@ -284,7 +286,7 @@ def main():
             "average_label": args.average_label,
             "plot_title": args.plot_title,
             "show": args.show,
-            "plot_settings": args.settings
+            "plot_settings": settings
         })
         if args.show:
             plt.show(block = True)
