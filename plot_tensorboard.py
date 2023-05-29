@@ -116,7 +116,7 @@ def plot_average_only(tag_index, fig, axes, steps, values, plot_data, settings):
         axes.legend(fontsize = settings['fontsize']['legend'])
 
 # main plot function
-def plot_tensorboard(plot_data):
+def plot_tensorboard(plot_data, print_info = True):
     # get plot settings
     settings = plot_data['plot_settings']
     # load event data using tensorboard API
@@ -126,8 +126,9 @@ def plot_tensorboard(plot_data):
         accumulators[f].Reload()
 
     # print info about event files
-    for f, accumulator in accumulators.items():
-        print_event_file_info(f, accumulator)
+    if print_info:
+        for f, accumulator in accumulators.items():
+            print_event_file_info(f, accumulator)
 
     # get dataframes for each event file
     dataframes = {}
@@ -135,7 +136,7 @@ def plot_tensorboard(plot_data):
         dataframes[f] = scalars_to_dataframe(accumulator)
 
     # calculate plot specs
-    if plot_data['plot_specs'] is None:
+    if plot_data['grid_specs'] is None:
         nrow = len(plot_data['tags'])
         ncol = 1
         # fill grid specs
@@ -145,7 +146,7 @@ def plot_tensorboard(plot_data):
     else:
         # parse plot specs ( format: <startrow>:<startcol>:<numrows>:<numcols> )
         grid_specs = []
-        for spec in plot_data['plot_specs']:
+        for spec in plot_data['grid_specs']:
             parsed = spec.split(':')
             s = ((int(parsed[0]), int(parsed[1])),(int(parsed[2]), int(parsed[3])))
             # check if valid grid spec
@@ -164,7 +165,7 @@ def plot_tensorboard(plot_data):
         for i in range(len(grid_specs)):
             for j in range(i + 1, len(grid_specs)):
                 if overlap(grid_specs[i], grid_specs[j]):
-                    raise ValueError(f"Grid specs overlap: {plot_data['plot_specs'][i]} and {plot_data['plot_specs'][j]}")
+                    raise ValueError(f"Grid specs overlap: {plot_data['grid_specs'][i]} and {plot_data['grid_specs'][j]}")
 
         # calculate max grid size
         nrow = 0
@@ -179,6 +180,23 @@ def plot_tensorboard(plot_data):
     fig.set_constrained_layout(True)
     gs = fig.add_gridspec(nrow, ncol)
 
+    # for overriding settings
+    def apply_settings_overrides(s, o):
+        for k, v in o.items():
+            if isinstance(v, dict):
+                s[k] = apply_settings_overrides(s[k], o[k])
+            else:
+                s[k] = o[k]
+        return s
+    
+    # per tag settings
+    tag_settings = []
+    for i, tag in enumerate(plot_data['tags']):
+        # apply per tag settings overrides
+        tag_settings.append(settings.copy())
+        if plot_data['plot_settings_overrides'] is not None and len(plot_data['plot_settings_overrides']) == len(plot_data['tags']) and isinstance(plot_data['plot_settings_overrides'][i], dict):
+            tag_settings[i] = apply_settings_overrides(tag_settings[i], plot_data['plot_settings_overrides'][i])
+
     # create axes for each tag
     axes = {}
     for i, tag in enumerate(plot_data['tags']):
@@ -187,16 +205,16 @@ def plot_tensorboard(plot_data):
                 grid_specs[i][0][1]:grid_specs[i][0][1] + grid_specs[i][1][1]]
         )
         # set axis title
-        axes[tag].set_title(tag if plot_data['tag_labels'] is None else plot_data['tag_labels'][i], fontsize = settings['fontsize']['plot_title'])
+        axes[tag].set_title(tag if plot_data['tag_labels'] is None else plot_data['tag_labels'][i], fontsize = tag_settings[i]['fontsize']['plot_title'])
         # set color cycle if specified
-        if 'color_cycle' in settings:
-            axes[tag].set_prop_cycle(cycler(color=settings['color_cycle']))
+        if 'color_cycle' in tag_settings[i]:
+            axes[tag].set_prop_cycle(cycler(color=tag_settings[i]['color_cycle']))
         # set tick label size
-        axes[tag].tick_params(axis='both', which='major', labelsize=settings['fontsize']['axis_tick_major'])
-        axes[tag].tick_params(axis='both', which='minor', labelsize=settings['fontsize']['axis_tick_minor'])
+        axes[tag].tick_params(axis='both', which='major', labelsize=tag_settings[i]['fontsize']['axis_tick_major'])
+        axes[tag].tick_params(axis='both', which='minor', labelsize=tag_settings[i]['fontsize']['axis_tick_minor'])
         # tick label format
-        axes[tag].ticklabel_format(axis='x', style=settings['tick_style_x'], scilimits=settings['tick_sci_limits']['x'])
-        axes[tag].ticklabel_format(axis='y', style=settings['tick_style_y'], scilimits=settings['tick_sci_limits']['y'])
+        axes[tag].ticklabel_format(axis='x', style=tag_settings[i]['tick_style_x'], scilimits=tag_settings[i]['tick_sci_limits']['x'])
+        axes[tag].ticklabel_format(axis='y', style=tag_settings[i]['tick_style_y'], scilimits=tag_settings[i]['tick_sci_limits']['y'])
 
     # plot data
     for i, tag in enumerate(plot_data['tags']):
@@ -205,11 +223,11 @@ def plot_tensorboard(plot_data):
         values = [dataframes[f][tag].loc[:,'value'].to_numpy() for f in plot_data['event_files']]
 
         if plot_data['plot_mode'] == 'all_runs_plus_average':
-            plot_all_runs_plus_average(i, fig, axes[tag], steps, values, plot_data, settings)
+            plot_all_runs_plus_average(i, fig, axes[tag], steps, values, plot_data, tag_settings[i])
         elif plot_data['plot_mode'] == 'average_only':
-            plot_average_only(i, fig, axes[tag], steps, values, plot_data, settings)
+            plot_average_only(i, fig, axes[tag], steps, values, plot_data, tag_settings[i])
         elif plot_data['plot_mode'] == 'all_runs':
-            plot_all_runs(i, fig, axes[tag], steps, values, plot_data, settings)
+            plot_all_runs(i, fig, axes[tag], steps, values, plot_data, tag_settings[i])
     
     # save figure
     fig.savefig(plot_data['output'], dpi=300)
@@ -234,7 +252,7 @@ def main():
     parser.add_argument('--tag_labels', nargs='+', help='A list of labels for the tags to plot. If left out, the tag names are used.') 
     parser.add_argument('--tag_x_labels', nargs='+', help='X-Axis labels for the tag plots.', default='Step') 
     parser.add_argument('--tag_y_labels', nargs='+', help='Y-Axis labels for the tag plots.', default='Value')  
-    parser.add_argument('--plot_specs', nargs='+', help='Specifies the plot position and size of each tag plot. The format is <startrow>:<startcolumn>:<numrows>:<numcolumns>. The ranges should not overlap.', type=str, required=False)
+    parser.add_argument('--grid_specs', nargs='+', help='Specifies the plot position and size of each tag plot. The format is <startrow>:<startcolumn>:<numrows>:<numcolumns>. The ranges should not overlap.', type=str, required=False)
     parser.add_argument('--output', help='Output file path. The extension determines the format that will be saved.', default='plot.pdf')
     parser.add_argument('--plot_title', help='Main title of the figure.', default='Untitled Plot')
     parser.add_argument('--settings', help='Path to the plot settings file.', default="plot_settings.json")
@@ -266,7 +284,7 @@ def main():
     else:
         if args.tags is None:
             raise ValueError("No tags specified")
-        if args.plot_specs is not None and len(args.plot_specs) != len(args.tags):
+        if args.grid_specs is not None and len(args.grid_specs) != len(args.tags):
             raise ValueError("Number of plot specs does not match number of tags")
         if args.tag_labels is not None and len(args.tag_labels) != len(args.tags):
             raise ValueError("Number of tag labels does not match number of tags")
@@ -280,13 +298,14 @@ def main():
             "tag_labels": args.tag_labels,
             "tag_x_labels": args.tag_x_labels,
             "tag_y_labels": args.tag_y_labels,
-            "plot_specs": args.plot_specs,
+            "grid_specs": args.grid_specs,
             "output": args.output,
             "plot_mode": args.plot_mode,
             "average_label": args.average_label,
             "plot_title": args.plot_title,
             "show": args.show,
-            "plot_settings": settings
+            "plot_settings": settings,
+            "plot_settings_overrides": None
         })
         if args.show:
             plt.show(block = True)

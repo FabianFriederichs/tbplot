@@ -3,7 +3,6 @@
     "plot_settings" : {
         "width" : 20.0,
         "height" : 12.0,
-        "legend" : true,
         "fontsize" : {
             "plot_title" : 9.0,
             "axis_label" : 8.0,
@@ -11,6 +10,7 @@
             "axis_tick_minor" : 6.0,
             "legend" : 8.0
         },    
+        "legend" : true,
         "linestyles" : {
             "primary" : {
                 "width" : 1.0,
@@ -23,7 +23,7 @@
                 "alpha" : 0.5
             }
         },
-        "tick_style_x" : "scientific",
+        "tick_style_x" : "plain",
         "tick_style_y" : "plain",
         "tick_sci_limits" : {
             "x" : [-2.0, 2.0],
@@ -32,11 +32,11 @@
     },
     "plot_jobs" : [
         {
-            "job_name" : "Scenario8_all_runs_plus_average",
-            "output" : "Scenario8_all_runs_plus_average.pdf",
+            "name" : "Scenario8_all_runs_plus_average",
+            "output" : "${name}_${year}-${month}-${day}.pdf",
             "plot_mode" : "all_runs_plus_average",
             "show" : false,
-            "plot_title" : "Scenario8_all_runs_plus_average",
+            "plot_title" : "${name}",
             "average_label" : "Average",
             "event_files" : [
                 "raw_data/ScenarioEightA/ScenarioContr/events.out.tfevents.1683556394.DESKTOP-84KCG8O.29084.0",
@@ -51,17 +51,14 @@
             "tags" : [
                 "Environment/Cumulative Reward",
                 "Environment/Episode Length",
-                "Policy/Entropy",
                 "Losses/Policy Loss"
             ],
             "tag_labels" : [
                 "Cumulative Reward",
                 "Episode Length",
-                "Entropy",
                 "Policy Loss"
             ],
             "tag_x_labels" : [
-                "Steps",
                 "Steps",
                 "Steps",
                 "Steps"
@@ -69,111 +66,28 @@
             "tag_y_labels" : [
                 "Cumulative Reward",
                 "Episode Length",
-                "Entropy",
                 "Policy Loss"
             ],
-            "plot_specs" : [
+            "grid_specs" : [
                 "0:0:2:2",
                 "2:0:1:1",
-                "2:1:1:1",
-                "2:2:1:1"
+                "2:1:1:1"
+            ],
+            "plot_settings_overrides" : [
+                { "legend" : true },
+                { "legend" : false, "tick_style_x" : "scientific" },
+                { "legend" : false, "tick_style_x" : "scientific" }
             ]
         },
         {
-            "job_name" : "Scenario8_all_runs",
-            "output" : "Scenario8_all_runs.pdf",
-            "plot_mode" : "all_runs",
-            "show" : false,
-            "plot_title" : "Scenario8_all_runs",
-            "average_label" : "Average",
-            "event_files" : [
-                "raw_data/ScenarioEightA/ScenarioContr/events.out.tfevents.1683556394.DESKTOP-84KCG8O.29084.0",
-                "raw_data/ScenarioEightB/ScenarioContr/events.out.tfevents.1683632052.DESKTOP-84KCG8O.14060.0",
-                "raw_data/ScenarioEightC/ScenarioContr/events.out.tfevents.1683710496.DESKTOP-84KCG8O.8792.0"
-            ],
-            "run_labels" : [
-                "Scenario 8 A",
-                "Scenario 8 B",
-                "Scenario 8 C"
-            ],
-            "tags" : [
-                "Environment/Cumulative Reward",
-                "Environment/Episode Length",
-                "Policy/Entropy",
-                "Losses/Policy Loss"
-            ],
-            "tag_labels" : [
-                "Cumulative Reward",
-                "Episode Length",
-                "Entropy",
-                "Policy Loss"
-            ],
-            "tag_x_labels" : [
-                "Steps",
-                "Steps",
-                "Steps",
-                "Steps"
-            ],
-            "tag_y_labels" : [
-                "Cumulative Reward",
-                "Episode Length",
-                "Entropy",
-                "Policy Loss"
-            ],
-            "plot_specs" : [
-                "0:0:2:2",
-                "2:0:1:1",
-                "2:1:1:1",
-                "2:2:1:1"
-            ]
+            "template" : "Scenario8_all_runs_plus_average",
+            "name" : "Scenario8_all_runs",
+            "plot_mode" : "all_runs"
         },
         {
-            "job_name" : "Scenario8_average_only",
-            "output" : "Scenario8_average_only.pdf",
-            "plot_mode" : "average_only",
-            "show" : false,
-            "plot_title" : "Scenario8_average_only",
-            "average_label" : "Average",
-            "event_files" : [
-                "raw_data/ScenarioEightA/ScenarioContr/events.out.tfevents.1683556394.DESKTOP-84KCG8O.29084.0",
-                "raw_data/ScenarioEightB/ScenarioContr/events.out.tfevents.1683632052.DESKTOP-84KCG8O.14060.0",
-                "raw_data/ScenarioEightC/ScenarioContr/events.out.tfevents.1683710496.DESKTOP-84KCG8O.8792.0"
-            ],
-            "run_labels" : [
-                "Scenario 8 A",
-                "Scenario 8 B",
-                "Scenario 8 C"
-            ],
-            "tags" : [
-                "Environment/Cumulative Reward",
-                "Environment/Episode Length",
-                "Policy/Entropy",
-                "Losses/Policy Loss"
-            ],
-            "tag_labels" : [
-                "Cumulative Reward",
-                "Episode Length",
-                "Entropy",
-                "Policy Loss"
-            ],
-            "tag_x_labels" : [
-                "Steps",
-                "Steps",
-                "Steps",
-                "Steps"
-            ],
-            "tag_y_labels" : [
-                "Cumulative Reward",
-                "Episode Length",
-                "Entropy",
-                "Policy Loss"
-            ],
-            "plot_specs" : [
-                "0:0:2:2",
-                "2:0:1:1",
-                "2:1:1:1",
-                "2:2:1:1"
-            ]
+            "template" : "Scenario8_all_runs",
+            "name" : "Scenario8_average_only",
+            "plot_mode" : "average_only"
         }
     ]
 }
