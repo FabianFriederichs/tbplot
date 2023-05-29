@@ -116,7 +116,7 @@ def main():
         # process jobs
         numjobs = len(jobfile["plot_jobs"])
         for i, job in enumerate(jobfile["plot_jobs"]):
-            print(f"Processing job {str(i)}/{str(numjobs)}: {job['name']}...")
+            print(f"Processing job {str(i + 1)}/{str(numjobs)}: {job['name']}...")
             ptb.plot_tensorboard(
                 {
                     "event_files": job["event_files"],

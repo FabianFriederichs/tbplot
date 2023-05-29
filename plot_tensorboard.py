@@ -6,6 +6,7 @@ import json
 import tensorboard as tb
 from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 from cycler import cycler
 
 def is_iterable(obj):
@@ -212,9 +213,15 @@ def plot_tensorboard(plot_data, print_info = True):
         # set tick label size
         axes[tag].tick_params(axis='both', which='major', labelsize=tag_settings[i]['fontsize']['axis_tick_major'])
         axes[tag].tick_params(axis='both', which='minor', labelsize=tag_settings[i]['fontsize']['axis_tick_minor'])
+        # *10^x tick labels
+        axes[tag].xaxis.set_major_formatter(ScalarFormatter(useMathText=True))
+        axes[tag].yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
         # tick label format
         axes[tag].ticklabel_format(axis='x', style=tag_settings[i]['tick_style_x'], scilimits=tag_settings[i]['tick_sci_limits']['x'])
         axes[tag].ticklabel_format(axis='y', style=tag_settings[i]['tick_style_y'], scilimits=tag_settings[i]['tick_sci_limits']['y'])
+        # offset font size
+        axes[tag].xaxis.offsetText.set_fontsize(tag_settings[i]['fontsize']['axis_tick_major'])
+        axes[tag].yaxis.offsetText.set_fontsize(tag_settings[i]['fontsize']['axis_tick_major'])
 
     # plot data
     for i, tag in enumerate(plot_data['tags']):
