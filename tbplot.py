@@ -108,6 +108,7 @@ def main():
         # load job file
         parser = argparse.ArgumentParser()
         parser.add_argument("job_file", help="Path to the job file")
+        parser.add_argument("--print_event_info", help="Print event info", action="store_true")
         args = parser.parse_args()
 
         # load job file
@@ -134,7 +135,7 @@ def main():
                     "plot_settings": jobfile["plot_settings"],
                     "plot_settings_overrides": job["plot_settings_overrides"]
                 },
-                print_info=False
+                print_info=args.print_event_info
             )
     except Exception as e:
         print(e)

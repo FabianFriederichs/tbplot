@@ -17,7 +17,7 @@ def is_iterable(obj):
     else:
         return True
 
-def print_event_file_info(event_file: str, accumulator: EventAccumulator):
+def print_event_file_info(event_file: str, accumulator: EventAccumulator, dataframe: pd.DataFrame):
     # print tree of tags
     tags = accumulator.Tags()
     print(f"Event File: {event_file}")
@@ -25,7 +25,10 @@ def print_event_file_info(event_file: str, accumulator: EventAccumulator):
         if is_iterable(subtags):
             print(f"   +- {tag}")
             for subtag in subtags:
-                print(f"   |  +- {subtag}")
+                if tag == 'scalars':
+                    print(f"   |  +- {subtag}: #entries = {dataframe[subtag].loc[:,'value'].count()}, min = {dataframe[subtag].loc[:,'value'].min()}, max = {dataframe[subtag].loc[:,'value'].max()}")
+                else:
+                    print(f"   |  +- {subtag}")
         else:
             print(f"   +- {tag}:\t{str(subtags)}")
 
@@ -124,17 +127,17 @@ def plot_tensorboard(plot_data, print_info = True):
     accumulators = {}
     for f in plot_data['event_files']:
         accumulators[f] = EventAccumulator(f)
-        accumulators[f].Reload()
-
-    # print info about event files
-    if print_info:
-        for f, accumulator in accumulators.items():
-            print_event_file_info(f, accumulator)
+        accumulators[f].Reload()   
 
     # get dataframes for each event file
     dataframes = {}
     for f, accumulator in accumulators.items():
         dataframes[f] = scalars_to_dataframe(accumulator)
+
+     # print info about event files
+    if print_info:
+        for f, accumulator in accumulators.items():
+            print_event_file_info(f, accumulator, dataframes[f])
 
     # calculate plot specs
     if plot_data['grid_specs'] is None:

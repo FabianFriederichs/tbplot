@@ -32,62 +32,67 @@
     },
     "plot_jobs" : [
         {
-            "name" : "Scenario8_all_runs_plus_average",
+            "name" : "CS",
             "output" : "${name}_${year}-${month}-${day}.pdf",
             "plot_mode" : "all_runs_plus_average",
             "show" : false,
             "plot_title" : "${name}",
-            "average_label" : "Average",
+            "average_label" : "Durchschnitt",
             "event_files" : [
-                "raw_data/ScenarioEightA/ScenarioContr/events.out.tfevents.1683556394.DESKTOP-84KCG8O.29084.0",
-                "raw_data/ScenarioEightB/ScenarioContr/events.out.tfevents.1683632052.DESKTOP-84KCG8O.14060.0",
-                "raw_data/ScenarioEightC/ScenarioContr/events.out.tfevents.1683710496.DESKTOP-84KCG8O.8792.0"
+                "raw_data/CS_A/ScenarioContr/events.out.tfevents.1685621876.PC-FABIAN.28316.0",
+                "raw_data/CS_B/ScenarioContr/events.out.tfevents.1685622603.PC-FABIAN.3080.0",
+                "raw_data/CS_C/ScenarioContr/events.out.tfevents.1685623284.PC-FABIAN.37248.0"
             ],
             "run_labels" : [
-                "Scenario 8 A",
-                "Scenario 8 B",
-                "Scenario 8 C"
+                "Durchlauf A",
+                "Durchlauf B",
+                "Durchlauf C"
             ],
             "tags" : [
                 "Environment/Cumulative Reward",
                 "Environment/Episode Length",
-                "Losses/Policy Loss"
+                "Losses/Policy Loss",
+                "Losses/Value Loss"
             ],
             "tag_labels" : [
-                "Cumulative Reward",
-                "Episode Length",
-                "Policy Loss"
+                "Kumulativer Reward",
+                "Episodenlänge",
+                "Policy Loss",
+                "Value Loss"
             ],
             "tag_x_labels" : [
+                "Steps",
                 "Steps",
                 "Steps",
                 "Steps"
             ],
             "tag_y_labels" : [
-                "Cumulative Reward",
-                "Episode Length",
-                "Policy Loss"
+                "Kumulativer Reward",
+                "Episodenlänge",
+                "Policy Loss",
+                "Value Loss"
             ],
             "grid_specs" : [
-                "0:0:2:2",
+                "0:0:2:3",
                 "2:0:1:1",
-                "2:1:1:1"
+                "2:1:1:1",
+                "2:2:1:1"
             ],
             "plot_settings_overrides" : [
                 { "legend" : true },
+                { "legend" : false, "tick_style_x" : "scientific" },
                 { "legend" : false, "tick_style_x" : "scientific" },
                 { "legend" : false, "tick_style_x" : "scientific" }
             ]
         },
         {
-            "template" : "Scenario8_all_runs_plus_average",
-            "name" : "Scenario8_all_runs",
-            "plot_mode" : "all_runs"
-        },
-        {
-            "template" : "Scenario8_all_runs",
-            "name" : "Scenario8_average_only",
-            "plot_mode" : "average_only"
+            "template" : "CS",
+            "name" : "CR",
+            "event_files" : [
+                "raw_data/CR_A/ScenarioContr/events.out.tfevents.1685624415.PC-FABIAN.31520.0",
+                "raw_data/CR_B/ScenarioContr/events.out.tfevents.1685625912.PC-FABIAN.50364.0",
+                "raw_data/CR_C/ScenarioContr/events.out.tfevents.1685626494.PC-FABIAN.42012.0"
+            ]
         }
     ]
 }
