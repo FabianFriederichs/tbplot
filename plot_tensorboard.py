@@ -178,6 +178,13 @@ def plot_tensorboard(plot_data, print_info = True):
             nrow = max(nrow, int(spec[0][0]) + int(spec[1][0]))
             ncol = max(ncol, int(spec[0][1]) + int(spec[1][1]))
 
+    # matplotlib config
+    plt.rcParams.update({
+        "text.usetex": True,
+        "text.latex.preamble" : r"\usepackage[utf8]{inputenc}\usepackage{amsmath}\usepackage{bm}",
+        "font.family": settings['fontfamily']
+    })
+
     # create figure with grid spec        
     fig = plt.figure()
     fig.set_size_inches(settings["width"] / 2.54, settings["height"] / 2.54)

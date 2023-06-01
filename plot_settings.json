@@ -9,6 +9,7 @@
         "axis_tick_minor" : 6.0,
         "legend" : 8.0
     },    
+    "font-family" : "sans-serif",
     "legend" : true,
     "linestyles" : {
         "primary" : {

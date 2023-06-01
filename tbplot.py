@@ -62,7 +62,7 @@ def fill_placeholders(job, global_placeholders):
 
 def load_jobfile(jobfile_path):
     # load job file
-    with open(jobfile_path, "r") as f:
+    with open(jobfile_path, "r", encoding="utf-8") as f:
         jobfile = json.load(f)
 
     # process template hierarchy
