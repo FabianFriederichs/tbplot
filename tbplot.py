@@ -65,6 +65,15 @@ def load_jobfile(jobfile_path):
     with open(jobfile_path, "r", encoding="utf-8") as f:
         jobfile = json.load(f)
 
+    # validate job file
+    # check if multiple jobs have the same name
+    job_names = set() # set of job names
+    for job in jobfile["plot_jobs"]:
+        if job["name"] in job_names:
+            raise Exception(f"Job name \'{job['name']}\' is not unique!")
+        else:
+            job_names.add(job["name"])
+
     # process template hierarchy
     # build a graph from the template hierarchy
     graph = nx.DiGraph()

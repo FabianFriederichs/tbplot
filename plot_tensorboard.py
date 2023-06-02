@@ -247,6 +247,8 @@ def plot_tensorboard(plot_data, print_info = True):
             plot_all_runs(i, fig, axes[tag], steps, values, plot_data, tag_settings[i])
     
     # save figure
+    # create output directory if it doesn't exist
+    os.makedirs(os.path.dirname(plot_data['output']), exist_ok=True)
     fig.savefig(plot_data['output'], dpi=300)
 
     # if show is true, show plot

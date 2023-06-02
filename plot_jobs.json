@@ -88,7 +88,7 @@
         },
         {
             "template" : "CS",
-            "name" : "CR",
+            "name" : "CS",
             "event_files" : [
                 "raw_data/CR_A/ScenarioContr/events.out.tfevents.1685624415.PC-FABIAN.31520.0",
                 "raw_data/CR_B/ScenarioContr/events.out.tfevents.1685625912.PC-FABIAN.50364.0",
